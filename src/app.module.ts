@@ -1,6 +1,6 @@
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { Module, NestModule } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { UserModule } from './modules/user/user.module';
 import { ProductModule } from './modules/product/product.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -11,9 +11,14 @@ import { WebsocketModule } from './modules/websocket/Websocket.module';
 import { SseModule } from './modules/sse/sse.module';
 import { ChatModule } from './modules/chat/chat.module';
 import { TypeOrmConfigService } from './providers/typeorm.config.service';
+import { JobModule } from './modules/job/job.module';
 import databaseConfig from './config/database.config';
 import appConfig from './config/app.config';
 import apiConfig from './config/api.config';
+import { SseMiddleware } from './middleware/sseCommon.middleware';
+import { ssePath } from './constants';
+import { APP_FILTER } from '@nestjs/core';
+import { CustomExceptionFilter } from './common/customException.filter';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -21,9 +26,10 @@ import apiConfig from './config/api.config';
       isGlobal: true,
     }),
     UserModule,
+    SseModule,
+    JobModule, //爬取招聘信息
     ProductModule,
     WebsocketModule,
-    SseModule,
     ChatModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -40,9 +46,20 @@ import apiConfig from './config/api.config';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, ResultService],
+  providers: [
+    AppService,
+    ResultService,
+    {
+      provide: APP_FILTER,
+      useClass: CustomExceptionFilter,
+    },
+  ],
   exports: [], // 导出以便其他模块使用
 })
 export class AppModule implements NestModule {
-  configure() {}
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(SseMiddleware)
+      .forRoutes(ssePath.sse, ssePath.jobSpiderStart); // 只在特定路由上应用中间件
+  }
 }

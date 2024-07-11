@@ -70,6 +70,7 @@ export class UserService {
    * @returns User
    */
   async findUserByToken(tokenValue: string): Promise<Result<User | null>> {
+    // throw new CustomException(ResultStatus.FAILURE, 'findUserByToken error');  //测试异常处理
     try {
       // LogUtil.log(`tokenValue: ${tokenValue}`);
       if (!tokenValue) {
