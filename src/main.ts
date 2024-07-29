@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as session from 'express-session';
 // import { WsAdapter } from '@nestjs/platform-ws';
-import { SseMiddleware } from './middleware/sse.middleware';
+// import { SseMiddleware } from './middleware/sse.middleware';
 import { ConfigService } from '@nestjs/config';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 async function bootstrap() {
@@ -48,7 +48,7 @@ async function bootstrap() {
   // app.useWebSocketAdapter(new WsAdapter(app));
 
   //SSE配置
-  app.use(SseMiddleware);
+  // app.use(SseMiddleware);
 
   const port = configService.get<number>('app.port');
   await app.listen(port);

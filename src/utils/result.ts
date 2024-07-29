@@ -8,7 +8,7 @@ export class Result<T> {
   code: number;
 
   @ApiProperty({ description: '返回描述' })
-  msg: string;
+  message: string;
 
   @ApiProperty({ description: '返回数据' })
   data: T;

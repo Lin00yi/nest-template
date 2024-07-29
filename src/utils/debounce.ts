@@ -1,3 +1,10 @@
+/**
+ * @author huaqiang
+ * @param fn  // 需要防抖的函数
+ * @param delay // 防抖时间
+ * @param immediate // 是否立即执行
+ * @returns
+ */
 export default function debounce(fn, delay, immediate = false) {
   let isInvoke = false;
   let timer = null;

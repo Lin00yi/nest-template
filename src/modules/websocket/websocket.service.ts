@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { debounce } from 'lodash';
+import debounce from 'lodash/debounce';
 
 @Injectable()
 export class WebsocketService {

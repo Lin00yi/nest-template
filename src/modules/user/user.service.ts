@@ -10,6 +10,8 @@ import { JwtService } from '@nestjs/jwt';
 import { ResultService } from 'src/utils/resultUtils';
 import { Result } from 'src/utils/result';
 import { CheckUsernameDto } from './dto/checkusername.dto';
+import { CustomException } from 'src/common/customException';
+import { ResultStatus } from 'src/utils/resultConstant';
 @Injectable()
 export class UserService {
   constructor(
@@ -70,6 +72,7 @@ export class UserService {
    * @returns User
    */
   async findUserByToken(tokenValue: string): Promise<Result<User | null>> {
+    // throw new CustomException(ResultStatus.FAILURE, 'findUserByToken error');  //测试异常处理
     try {
       // LogUtil.log(`tokenValue: ${tokenValue}`);
       if (!tokenValue) {
@@ -84,8 +87,10 @@ export class UserService {
       return ResultService.success('Successful', user);
     } catch (error) {
       LogUtil.error(`error tokenValue: ${error}`);
-      // 如果验证失败或令牌过期等，返回 null 或者抛出错误
-      return ResultService.failure('Failed to fetch user information');
+      throw new CustomException(
+        ResultStatus.IDENTITY_ERROR,
+        'Failed to fetch user information',
+      );
     }
   }
 
