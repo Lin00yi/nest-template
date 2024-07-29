@@ -13,7 +13,7 @@ export class CustomExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
     // const request = ctx.getRequest();
-
+    console.log('exception.getResponse()', exception.getResponse());
     const errorResponse = {
       code: exception.getResponse()['code'],
       // timestamp: new Date().toISOString(),
